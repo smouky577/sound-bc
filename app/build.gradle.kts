@@ -6,8 +6,10 @@ plugins {
     id("org.jetbrains.kotlin.plugin.compose")
 }
 
+// Signing keys stay outside the repository; without them the debug build still works.
+val keystoreFile = rootProject.file("keystore.properties")
 val keystoreProperties = Properties().apply {
-    load(FileInputStream(rootProject.file("keystore.properties")))
+    if (keystoreFile.exists()) load(FileInputStream(keystoreFile))
 }
 
 android {
@@ -23,7 +25,7 @@ android {
     }
 
     signingConfigs {
-        create("release") {
+        if (keystoreFile.exists()) create("release") {
             storeFile = file(keystoreProperties.getProperty("storeFile"))
             storePassword = keystoreProperties.getProperty("storePassword")
             keyAlias = keystoreProperties.getProperty("keyAlias")
@@ -34,7 +36,7 @@ android {
     buildTypes {
         release {
             isMinifyEnabled = false
-            signingConfig = signingConfigs.getByName("release")
+            signingConfig = signingConfigs.findByName("release")
         }
     }
 

@@ -36,7 +36,7 @@ Android приложение, което мери балистичния кое�
 
 ## Компилация
 
-Проектът е за `compileSdk 37`, `minSdk 26` и Gradle 9.6. Отвори папката в Android Studio или изпълни `gradlew.bat assembleRelease`. Подписаната версия иска файл `keystore.properties`, който не е в хранилището.
+Проектът е за `compileSdk 37`, `minSdk 26` и Gradle 9.6. Отвори папката в Android Studio или изпълни `gradlew.bat assembleDebug`.
 
 ---
 
@@ -78,4 +78,4 @@ Record with the app's **Record** button. A camera video, or a file sent through 
 
 ## Build
 
-The project uses `compileSdk 37`, `minSdk 26` and Gradle 9.6. Open the folder in Android Studio or run `gradlew.bat assembleRelease`. The signed build needs a `keystore.properties` file, which is not in the repository.
+The project uses `compileSdk 37`, `minSdk 26` and Gradle 9.6. Open the folder in Android Studio or run `gradlew.bat assembleDebug`.
