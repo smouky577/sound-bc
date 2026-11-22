@@ -5,6 +5,7 @@ import com.drbaysinger.audiobc.audio.rmsEnvelope
 import com.drbaysinger.audiobc.audio.zeroPhaseHighpass
 import com.drbaysinger.audiobc.ballistics.Atmosphere
 import com.drbaysinger.audiobc.ballistics.DragTable
+import com.drbaysinger.audiobc.ballistics.bcHitWindowMs
 import com.drbaysinger.audiobc.ballistics.simulateFlight
 import com.drbaysinger.audiobc.ballistics.solveBc
 import com.drbaysinger.audiobc.ballistics.timeOfFlightSeconds
@@ -109,6 +110,26 @@ class SignalAndFlightTest {
         assertTrue(tooFast.outOfRange)
         val tooSlow = solveBc(distance, muzzle, density, sound, 30.0, g1)
         assertTrue(tooSlow.outOfRange)
+    }
+
+    @Test
+    fun hitWindowBracketsTheBcScale() {
+        val g1 = DragTable.parse(asset("g1_cd.csv"))
+        val distance = 100.0
+        val muzzle = 280.0
+        val density = Atmosphere.density(15.0, 1013.25, 50.0)
+        val sound = Atmosphere.speedOfSound(15.0)
+        val mic = 0.5
+        val window = bcHitWindowMs(distance, muzzle, density, sound, mic, g1)
+        assertTrue(window != null)
+        val acoustic = distance / sound - mic / sound
+        val fastMs = (simulateFlight(distance, muzzle, density, sound, 5.0, g1).time + acoustic) * 1000.0
+        val slowMs = (simulateFlight(distance, muzzle, density, sound, 0.02, g1).time + acoustic) * 1000.0
+        assertEquals(fastMs.coerceAtLeast(0.0), window!!.minMs, 1e-6)
+        assertEquals(slowMs, window.maxMs ?: Double.NaN, 1e-6)
+        val mid = simulateFlight(distance, muzzle, density, sound, 0.2, g1).time
+        val midMs = (mid + acoustic) * 1000.0
+        assertTrue(midMs > window.minMs && midMs < (window.maxMs ?: Double.POSITIVE_INFINITY))
     }
 
     private fun gain(frequency: Double, sampleRate: Int): Double {

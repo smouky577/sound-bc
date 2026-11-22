@@ -38,6 +38,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.drbaysinger.audiobc.ballistics.Atmosphere
+import com.drbaysinger.audiobc.ballistics.bcHitWindowMs
 import com.drbaysinger.audiobc.ballistics.energyJoules
 import com.drbaysinger.audiobc.ballistics.formFactor
 import com.drbaysinger.audiobc.ballistics.projectileCd
@@ -151,7 +152,42 @@ fun ColumnScope.ResultsScreen(vm: AudioBcViewModel) {
                     T(shot?.decodeError ?: text.dash, Danger, 13.sp, maxLines = 3)
                 }
             }
-            Row(Modifier.fillMaxWidth().padding(top = 8.dp), horizontalArrangement = Arrangement.End) {
+            val cond = vm.sessionCond?.let(vm::parseCond)
+            val speed = shot?.v0 ?: cond?.sharedSpeed
+            val window = remember(cond, speed, g7) {
+                if (cond == null || speed == null) {
+                    null
+                } else {
+                    val sound = Atmosphere.speedOfSound(cond.temperature)
+                    val density = Atmosphere.density(cond.temperature, cond.pressure, cond.humidity)
+                    val table = if (g7) vm.tables.second else vm.tables.first
+                    bcHitWindowMs(cond.distance, speed, density, sound, cond.microphone, table)
+                }
+            }
+            Row(
+                Modifier.fillMaxWidth().padding(top = 8.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween,
+            ) {
+                val label = window?.let { w ->
+                    val from = formatNumber(w.minMs, 0, bg)
+                    val to = w.maxMs?.let { formatNumber(it, 0, bg) }
+                    if (to == null) text.hitWindowOpen(from) else text.hitWindow(from, to)
+                }
+                val dtMs = shot?.deltaT?.times(1000.0)
+                val inside = window != null && dtMs != null &&
+                    dtMs >= window.minMs - 0.5 && (window.maxMs == null || dtMs <= window.maxMs + 0.5)
+                T(
+                    label.orEmpty(),
+                    when {
+                        label == null || dtMs == null -> Muted
+                        inside -> Text
+                        else -> Danger
+                    },
+                    14.sp,
+                    FontWeight.SemiBold,
+                    Modifier.weight(1f).padding(end = 8.dp),
+                )
                 Pill(filled = false, height = 44.dp, onClick = { vm.resultsSpectrogram = !vm.resultsSpectrogram }) {
                     T(if (vm.resultsSpectrogram) text.showWaveform else text.showSpectrogram, Muted, 14.sp)
                 }

@@ -47,6 +47,8 @@ class L10n(val bulgarian: Boolean) {
     val tapGong = t("докосни за GONG", "tap to place GONG")
     val tapShot = t("докосни за SHOT", "tap to place SHOT")
     val showSpectrogram = t("Спектрограма", "Show spectrogram")
+    fun hitWindow(from: String, to: String) = t("$from–$to ms", "$from–$to ms")
+    fun hitWindowOpen(from: String) = t("от $from ms", "from $from ms")
     val showWaveform = t("Вълна", "Show waveform")
     val shot = t("Изстрел", "Shot")
     val outOfRange = t("извън обхват", "out of range")

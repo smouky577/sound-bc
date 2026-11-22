@@ -11,12 +11,13 @@ Android приложение, което мери балистичния кое�
 - Връзка на живо с Wi‑Fi хронограф **HT-X3006 / HT-50**: всеки изстрел пази своята скорост и енергия (J)
 - Текущо време от барометъра на телефона и Open-Meteo, или ръчно въведени условия
 - Резултати G1 и G7 за всеки изстрел, история на сесиите
+- На реда със спектрограмата: интервал в милисекунди, в който ударът трябва да попадне, за да е BC между 0.02 и 5.0
 - Експорт в Excel (.xlsx)
 - Български и английски, сменят се с флагчето
 
 ## Инсталация
 
-Свали **SoundBC-1.0.apk** от [Releases](https://github.com/smouky577/sound-bc/releases/tag/v1.0) и го инсталирай на телефона. Ако Android попита, разреши инсталация от този файл.
+Свали **SoundBC-1.2.apk** от [Releases](https://github.com/smouky577/sound-bc/releases/tag/v1.2) и го инсталирай на телефона. Ако Android попита, разреши инсталация от този файл.
 
 ## Как се мери
 
@@ -53,12 +54,13 @@ The phone records the shot and the gong hit. From the time between the two sound
 - Live link to **HT-X3006 / HT-50** Wi‑Fi chronographs: each shot keeps its own speed and energy (J)
 - Current weather from the phone barometer and Open-Meteo, or manual conditions
 - G1 and G7 results for every shot, session history
+- On the spectrogram row: the millisecond window the hit must fall in for the BC to stay between 0.02 and 5.0
 - Excel (.xlsx) export
 - Bulgarian and English, switched with the flag
 
 ## Install
 
-Download **SoundBC-1.0.apk** from [Releases](https://github.com/smouky577/sound-bc/releases/tag/v1.0) and install it on the phone. Allow installation from this file if Android asks.
+Download **SoundBC-1.2.apk** from [Releases](https://github.com/smouky577/sound-bc/releases/tag/v1.2) and install it on the phone. Allow installation from this file if Android asks.
 
 ## How to measure
 

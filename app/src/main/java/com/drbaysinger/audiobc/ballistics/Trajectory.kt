@@ -17,6 +17,32 @@ data class ModelResult(
 )
 
 /**
+ * Delay from the muzzle blast to the gong sound (t2 − t1), in milliseconds,
+ * for which the solved BC stays inside 0.02…5.0 lb/in².
+ * The lower bound is the flight at BC 5.0, the upper bound at BC 0.02.
+ * [maxMs] is null when even BC 0.02 never reaches the gong.
+ */
+data class BcHitWindow(val minMs: Double, val maxMs: Double?)
+
+fun bcHitWindowMs(
+    distanceM: Double,
+    muzzleVelocity: Double,
+    density: Double,
+    soundSpeed: Double,
+    microphoneM: Double,
+    table: DragTable,
+): BcHitWindow? {
+    if (distanceM <= 0.0 || muzzleVelocity <= 1.0 || density <= 0.0 || soundSpeed <= 0.0) return null
+    val fast = simulateFlight(distanceM, muzzleVelocity, density, soundSpeed, BC_MAX, table).time
+    if (!fast.isFinite() || fast <= 0.0) return null
+    val slow = simulateFlight(distanceM, muzzleVelocity, density, soundSpeed, BC_MIN, table).time
+    val acoustic = distanceM / soundSpeed - microphoneM / soundSpeed
+    val minMs = ((fast + acoustic) * 1000.0).coerceAtLeast(0.0)
+    val maxMs = if (slow.isFinite()) ((slow + acoustic) * 1000.0).coerceAtLeast(minMs) else null
+    return BcHitWindow(minMs, maxMs)
+}
+
+/**
  * Time of flight from the two acoustic marks.
  * TOF = (t2 − t1) − D/c + microphone/c.
  * The microphone is beside the shooter: the blast is late by microphone/c,
