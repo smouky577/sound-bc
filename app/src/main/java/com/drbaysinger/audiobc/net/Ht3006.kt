@@ -24,7 +24,7 @@ import kotlin.math.abs
  * The chronograph does not use Bluetooth: it opens its own Wi-Fi hotspot
  * (SSID "HT-X3000" or "HT50", password 88888888) and serves an HTML page with the
  * shot list "1: 812.3", "2: 809.8", … Same protocol as the Chrono app
- * (Projects/Chrono app, ChronoViewModel).
+ * (Projects/Chrono, ChronoViewModel).
  *
  * [connect] joins the hotspot for this app only and keeps it until [disconnect]. The page is
  * polled every second. The shots already stored on the chronograph when the link comes up are
